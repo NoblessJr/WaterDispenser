@@ -704,7 +704,6 @@ local function Event_ADDON_LOADED(arg1)--init!
 
 		-- Add toggle function for addon status
 		local function doWDToggle(value)
-			print(value)
 			if value == true then
 				ADDON.DB.Enabled = true
 			else
