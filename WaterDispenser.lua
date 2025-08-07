@@ -580,12 +580,20 @@ end
 
 
 local function Event_BAG_UPDATE()
+	if not ADDON.DB.Enabled then
+		return
+	end
 	if ADDON.TradeClass and ADDON.MissingStack then
 		ADDON.FillTrade()
 	end
 end
 local function Event_TRADE_SHOW()
 	if InCombatLockdown() then
+		return
+	end
+
+	-- Check if addon is enabled
+	if not ADDON.DB.Enabled then
 		return
 	end
 
@@ -670,6 +678,11 @@ local function Event_ADDON_LOADED(arg1)--init!
 			ADDON.DB.AutoFill=nil
 		end
 
+		-- Initialize Enabled setting for existing databases
+		if ADDON.DB.Enabled == nil then
+			ADDON.DB.Enabled = true
+		end
+
 		--always update name!
 		ADDON.DB.Item.MageWater.name=L.MageWater
 		ADDON.DB.Item.MageFood.name=L.MageFood
@@ -689,6 +702,17 @@ local function Event_ADDON_LOADED(arg1)--init!
 			print(ADDON.PREFIX,"Set "..var.." to "..tostring(DB[var]))
 		end
 
+		-- Add toggle function for addon status
+		local function doWDToggle(value)
+			print(value)
+			if value == true then
+				ADDON.DB.Enabled = true
+			else
+				ADDON.DB.Enabled = false
+			end
+			print(ADDON.PREFIX,"Addon "..(ADDON.DB.Enabled and "enabled" or "disabled"))
+		end
+
 		ADDON.Tool.SlashCommand({"/wd","/waterdispenser"},{
 			{"auto","",{
 					{"solo",  "", {{"%",L.slashAutoFillSolo,doDBSet,ADDON.DB,"AutoFillSolo"}}},
@@ -699,6 +723,8 @@ local function Event_ADDON_LOADED(arg1)--init!
 			{"fill",L.slashFill,ADDON.FillTrade,true},
 			{"about",L.slashAbout,ADDON.Options.Open,2},
 			{{"config","setup","options"},L.slashConfig,ADDON.Options.Open,1},
+			{"on", L.Enabled, doWDToggle, true},
+			{"off", L.Disabled, doWDToggle,false},
 		})
 
 		ADDON.OptionsInit()

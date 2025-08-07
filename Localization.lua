@@ -48,6 +48,8 @@ ADDON.locales={
 		MageWater="Any conjured water",
 		MageFood="Any conjured food",
 		WarlockHealthstone="Any Healthstone",
+		Enabled="Enables the addon",
+		Disabled="Disables the addon",
 		
 	},
 	deDE=  {
